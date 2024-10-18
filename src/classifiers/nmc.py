@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.metrics import pairwise_distances
 
 import pandas as pd
 
@@ -73,6 +74,29 @@ class NMC(object):
         scores = self.decision_function(xts)
         ypred = np.argmax(scores, axis=1)
         return ypred
+
+
+    def decision_function(self, xts):
+        """
+        Compute similarities with centroids
+
+        Parameters
+        ----------
+        xts : ndarray
+            Input samples to be classified
+
+        Returns
+        -------
+            Output values for each sample vs class
+        """
+        if self.centroids is None:
+            raise ValueError(
+                "Centroids have not been estimated. Call `fit' first.")
+
+        dist = pairwise_distances(xts, self.centroids)
+        sim = 1 / (1e-3 + dist)
+        return sim
+
 
 
 
